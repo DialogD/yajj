@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <base href="/">
+    <link href="css/H-ui.min.css" rel="stylesheet" type="text/css" />
+    <link href="css/H-ui.admin.css" rel="stylesheet" type="text/css" />
+    <link href="css/style.css" rel="stylesheet" type="text/css" />
+    <link href="lib/Hui-iconfont/1.0.1/iconfont.css" rel="stylesheet" type="text/css" />
+    <link rel="stylesheet" href="lib/layui/css/layui.css" media="all">
+</head>
+<body id="userBody">
+<nav class="breadcrumb"><i class="Hui-iconfont">&#xe67f;</i> 首页 <span class="c-gray en">&gt;</span> 管理员管理 <span class="c-gray en">&gt;</span> 家居空间列表 <a class="btn btn-success radius r mr-20" style="line-height:1.6em;margin-top:3px" href="javascript:location.replace(location.href);" title="刷新" ><i class="Hui-iconfont">&#xe68f;</i></a></nav>
+<div class="pd-20">
+    <div class="text-c">
+        <div class="row cl ">
+            <div class="formControls col-3">
+                用户名: <input type="text" class="input-text" style="width: 200px" id="username" th:value="${username}">
+            </div>
+        </div>
+        <div class="row cl">
+            <div class="cl pd-5">
+                <button type="button"
+                        class="btn btn-success radius" id="" name="" onclick="queryByCondition()">
+                    <i class="Hui-iconfont">&#xe665;</i> 搜用户
+                </button>
+            </div>
+        </div>
+    </div>
+    <div class="cl pd-5 bg-1 bk-gray mt-20">
+        <span class="l">
+        </span>
+        <span class="r">共有数据：<strong><span th:text="${pageInfo.total}"></span></strong> 条</span> </div>
+    <table class="table table-border table-bordered table-bg">
+        <thead>
+        <tr>
+            <th scope="col" colspan="10">家居空间列表</th>
+        </tr>
+        <tr class="text-c">
+            <th width="25"><input type="checkbox" name="query" value=""></th>
+            <th width="40">ID</th>
+            <th width="80">用户名</th>
+            <th width="18%">内容</th>
+            <th width="18%">家居图片</th>
+            <th width="100">发布时间</th>
+            <th width="80">操作</th>
+        </tr>
+        </thead>
+        <tbody th:each="space : ${pageInfo.list}">
+        <tr class="text-c">
+            <td><input type="checkbox" th:value="${space.id}" name="" class="checkBox"></td>
+            <td width="40" th:text="${space.id}">ID</td>
+            <td width="80" th:text="${space.username}">用户名</td>
+            <td width="80" th:text="${space.jjDesc}">内容</td>
+            <td width="18%"><img th:src="${space.image}" style="width: 120px;height: 80px;"></td>
+            <td width="100" th:text="${#dates.format(space.createTime,'yyyy-MM-dd HH:mm:ss')}">2020-01-01</td>
+            <td class="td-manage">
+                <a title="删除" href="javascript:;" onclick="space_del(this,this.id)" th:id="${space.id}" class="ml-5" style="text-decoration:none"><i class="Hui-iconfont" style="font-size: 16px">&#xe6e2;</i></a>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+    <div id="page"></div>
+
+</div>
+
+<script type="text/javascript" src="lib/jquery/1.9.1/jquery.min.js"></script>
+<script type="text/javascript" src="lib/layer/1.9.3/layer.js"></script>
+<script type="text/javascript" src="lib/laypage/1.2/laypage.js"></script>
+<script type="text/javascript" src="lib/My97DatePicker/WdatePicker.js"></script>
+<script type="text/javascript" src="js/H-ui.js"></script>
+<script type="text/javascript" src="js/H-ui.admin.js"></script>
+<script src="lib/layui/layui.js"></script>
+<script>
+
+    layui.use('laypage', function(){
+        var laypage = layui.laypage;
+        //执行一个laypage实例
+        laypage.render({
+            elem: 'page', //注意，这里的 test1 是 ID，不用加 # 号
+            count: [[${pageInfo.total}]] ,//数据总数，从服务端得到
+            limit:[[${pageInfo.pageSize}]],    //每页显示的条数
+            limits:[1,2,3,4,5,6],   //每页显示条数的选择项（下拉列表）
+            curr:[[${pageInfo.pageNum}]] ,  //当前页
+            groups:5,  //连续出现的页码
+            layout:['count','prev','page','next','refresh','limit','skip'],
+            jump: function(obj, first){
+                var username = $("#username").val();
+                //首次不执行
+                if(!first){
+                    $("#userBody").load("[[${url}]]?currentPage="+obj.curr+"&pageSize="+obj.limit+"&username="+username);
+
+                }
+            }
+        });
+    });
+
+
+
+</script>
+<script type="text/javascript">
+    //查询
+    function queryByCondition() {
+        //获取到用户输入的用户名
+        var username = $("#username").val();
+        //局部刷新到后台
+        $("#userBody").load("[[${url}]]",{"username":username});
+    }
+
+
+    /*删除*/
+    function space_del(obj,id){
+        layer.confirm('确认要删除吗？',function(index){
+            $.ajax({
+                url:"space/deleteById",
+                type:"GET",
+                data:"id="+id,
+                success:function (data) {
+                    if (data.code == 200){
+                        $(obj).parents("tr").remove();
+                        layer.msg(data.message,{icon:6,time:2000},function () {
+                            location.reload();  //刷新
+                        });
+                    } else {
+                        layer.msg(data.message,{icon:5,time:2000});
+                    }
+                }
+            })
+        });
+    }
+
+</script>
+</body>
+</html>

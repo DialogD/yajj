@@ -1,0 +1,317 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>支付页面</title>
+    <base href="/">
+    <link rel="stylesheet" href="lib/layui/css/layui.css" media="all">
+    <link th:href="@{css/demo.css}" rel="stylesheet" type="text/css" />
+    <link th:href="@{css/cartstyle.css}" rel="stylesheet" type="text/css" />
+    <link th:href="@{css/jsstyle.css}" rel="stylesheet" type="text/css" />
+    <link rel="stylesheet" th:href="@{css/front/shopping.css}">
+    <link href="lib/Hui-iconfont/1.0.1/iconfont.css" rel="stylesheet" type="text/css" />
+</head>
+<body>
+<div id="top">
+    <header>
+        <div class="logo">
+            <img src="images/front/index-logo.png"/>
+        </div>
+        <nav>
+            <ul>
+                <li><a th:href="@{home/index}">首页</a></li>
+                <li><a  th:href="@{product/show}">在线商城</a></li>
+                <li><a th:href="@{home/our}">联系我们</a></li>
+                <li><a th:href="@{home/news}">家居动态</a></li>
+                <li  class="top"><a th:href="@{home/center}">个人中心</a></li>
+            </ul>
+        </nav>
+        <div class="header_right" style="padding-right: 36px">
+            <a title="退出登录" th:href="@{user/logout}" th:if="${session.loginUser}" style="margin-right: 1px;cursor: pointer;text-decoration:none;">
+                <i class="Hui-iconfont" style="font-size:28px;">&#xe60b;</i>
+            </a>
+            <a title="购物车" th:href="@{home/center}" style="margin-right: 15px;cursor: pointer;text-decoration:none;">
+                <i class="Hui-iconfont" style="font-size:28px;">&#xe6b9;</i><span class="badge badge-danger" th:text="${session.cartNum}">0</span>
+            </a>
+            <a th:title="${session.loginUser} == null ? '未登录': ${session.loginUser.username}" style="margin-right: 1px;cursor: pointer;text-decoration:none;">
+                <img th:if="${session.loginUser}" th:src="${session.loginUser.image}" style="width: 30px;margin-bottom: 0px">
+                <i class="Hui-iconfont" style="font-size:28px;" th:if="${session.loginUser} == null">&#xe60d;</i>
+            </a>
+        </div>
+    </header>
+</div>
+<div class="concent">
+    <!--地址 -->
+    <div class="paycont">
+        <div class="address">
+            <h3>确认收货地址 </h3>
+            <div class="control">
+                <div class="tc-btn createAddr theme-login am-btn am-btn-danger"><a href="addAddress.jsp" style="color: white;">使用新地址</a></div>
+            </div>
+            <div class="clear"></div>
+            <ul class="addressChoose">
+                <!-- 默认地址：class="user-addresslist defaultAddr" -->
+                <li  th:each="addr : ${addressList}" class="user-addresslist"}>
+                    <div class="address-left">
+                        <div class="user DefaultAddr">
+                            <span class="buy-address-detail"></span>
+                            <span class="buy-user" th:text="${addr.receiver}">收件人</span>
+                            <span class="buy-phone" th:text="${addr.phone}">收件人电话</span>
+                        </div>
+
+                        <div class="default-address DefaultAddr">
+                            <span class="buy-line-title buy-line-title-type">收货地址：</span>
+                            <span class="buy--address-detail" th:text="${addr.address}">地址</span>
+                        </div>
+                        <span th:if="${addr.isDefault}"><ins class="deftip" th:text="默认地址"></ins></span>
+                    </div>
+                    <div class="new-addr-btn">
+                        <span class="new-addr-bar hidden">|</span>
+                        <a href="#">编辑</a>
+                        <span class="new-addr-bar">|</span>
+                        <a href="javascript:void(0);" onclick="delClick(this);">删除</a>
+                    </div>
+                </li>
+            </ul>
+
+            <div class="clear"></div>
+        </div>
+        <!--物流 -->
+        <div class="logistics">
+            <h3>选择物流方式</h3>
+            <ul class="op_express_delivery_hot">
+                <li data-value="yuantong" class="OP_LOG_BTN "><i class="c-gap-right" style="background-position:0px -468px"></i>圆通<span id="1"></span></li>
+                <li data-value="shentong" class="OP_LOG_BTN "><i class="c-gap-right" style="background-position:0px -1008px"></i>申通<span id="2"></span></li>
+                <li data-value="yunda" class="OP_LOG_BTN "><i class="c-gap-right" style="background-position:0px -576px"></i>韵达<span id="3"></span></li>
+                <li data-value="zhongtong" class="OP_LOG_BTN op_express_delivery_hot_last"><i class="c-gap-right" style="background-position:0px -324px"></i>中通<span id="4"></span></li>
+                <li data-value="shunfeng" class="OP_LOG_BTN  op_express_delivery_hot_bottom"><i class="c-gap-right" style="background-position:0px -180px"></i>顺丰<span id="5"></span></li>
+            </ul>
+        </div>
+        <div class="clear"></div>
+
+        <!--支付方式-->
+        <div class="logistics">
+            <h3>选择支付方式</h3>
+            <ul class="pay-list">
+                <li class="pay card"><img src="/images/wangyin.jpg" />银联<span id="103"></span></li>
+                <li class="pay qq"><img src="/images/weizhifu.jpg" />微信<span id="102"></span></li>
+                <li class="pay taobao"><img src="/images/zhifubao.jpg" />支付宝<span id="101"></span></li>
+            </ul>
+        </div>
+        <div class="clear"></div>
+
+        <!--订单 -->
+        <div class="concent">
+            <div id="payTable">
+                <h3>确认订单信息</h3>
+                <div class="cart-table-th">
+                    <div class="wp">
+
+                        <div class="th th-item">
+                            <div class="td-inner">商品信息</div>
+                        </div>
+                        <div class="th th-price">
+                            <div class="td-inner">单价</div>
+                        </div>
+                        <div class="th th-amount">
+                            <div class="td-inner">数量</div>
+                        </div>
+                        <div class="th th-sum">
+                            <div class="td-inner">金额</div>
+                        </div>
+                       <!-- <div class="th th-oplist">
+                            <div class="td-inner">配送方式</div>
+                        </div>-->
+
+                    </div>
+                </div>
+                <div class="clear"></div>
+                    <!-- 购物车 -->
+                    <tr class="item-list">
+                        <div class="bundle  bundle-last">
+                            <div class="bundle-main">
+                                <ul class="item-content clearfix" th:each="cart : ${cartList}">
+                                    <div class="pay-phone">
+                                        <li class="td td-item">
+                                            <div class="item-info">
+                                                <div class="item-basic-info">
+                                                    <a href="#" class="item-title J_MakePoint" data-point="tbcart.8.11" th:text="${cart.productName}">商品的描述</a>
+                                                </div>
+                                            </div>
+                                        </li>
+                                        <li class="td td-price">
+                                            <div class="item-price price-promo-promo">
+                                                <div class="price-content">
+                                                    <div class="price-line">
+                                                        <em class="J_Price price-now" id="priceNow" tabindex="0" th:text="${cart.price}">商品单价</em>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </li>
+                                    </div>
+                                    <li class="td td-amount">
+                                        <div class="amount-wrapper ">
+                                            <div class="item-amount ">
+                                                <span class="phone-title">购买数量</span>
+                                                <div class="sl">
+                                                    <input class="text_box" id="count" type="text" th:value="${cart.count}"
+                                                           style="width: 30px; text-align: center;"/>
+                                                    <input type="hidden"  value="goodsId">
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </li>
+                                    <li class="td td-sum">
+                                        <div class="td-inner">
+                                            <em tabindex="0" class="J_ItemSum number" id="singlePrice" th:text="${cart.price*cart.count}">金额</em>
+                                        </div>
+                                    </li>
+                                    <!--<li class="td td-oplist">
+                                        <div class="td-inner">
+                                            <span class="phone-title">配送方式</span>
+                                            <div class="pay-logis">
+                                                <b class="sys_item_freprice">中通</b>
+                                            </div>
+                                        </div>
+                                    </li>-->
+
+                                </ul>
+                                <div class="clear"></div>
+
+                            </div>
+                        </div>
+                    </tr>
+                <div class="clear"></div>
+            </div>
+
+
+            <!--信息 -->
+            <div class="order-go clearfix">
+                <div class="pay-confirm clearfix">
+                    <div class="box" th:each="addr : ${addressList}" th:if="${addr.isDefault}">
+
+                        <div tabindex="0" id="holyshit267" class="realPay"><em class="t">实付款：</em>
+                            <span class="price g_price ">
+                                    <span>¥</span> <em class="style-large-bold-red " id="J_ActualFee" th:text="${totalPrice}"></em>
+											</span>
+                        </div>
+                        <div>快递费￥<b class="sys_item_freprice">20</b>元</div>
+                        <div id="holyshit268" class="pay-address">
+
+                            <p class="buy-footer-address">
+                                <span class="buy-line-title buy-line-title-type">寄送至：</span>
+                                <span class="buy--address-detail" id="send" th:text="${addr.address}">
+
+                                </span>
+                            </p>
+                            <p class="buy-footer-address">
+                                <span class="buy-line-title">收货人：</span>
+                                <span class="buy-address-detail">
+                                         <span class="buy-user" id="person" th:text="${addr.receiver}"></span>
+												<span class="buy-phone" id="tel" th:text="${addr.phone}"></span>
+												</span>
+                            </p>
+                        </div>
+                    </div>
+
+                    <div id="holyshit269" class="submitOrder">
+                        <div class="go-btn-wrap">
+                            <a id="go" class="btn-go" tabindex="0" title="点击此按钮，提交订单">提交订单</a>
+                        </div>
+                        <form action="/order/submitOrder" method="post" id="form">
+                            <input type="hidden" name="revicer"  id="buy_user"/>
+                            <input type="hidden" name="phone"  id="phone"/>
+                            <input type="hidden" name="reviceAddress"  id="address"/>
+                            <input type="hidden" name="logisticsProvidersId" id="express"/>
+                            <input type="hidden" name="payTypeId" id="paytype"/>
+                            <input type="hidden" name="totalMoney" th:value="${totalPrice}"/>
+                            <input type="hidden" name="logisticsCost" id="logisticsCost"/>
+                            <input type="hidden" name="orderNo" th:value="${allCartId}"/>
+                        </form>
+                    </div>
+                    <div class="clear"></div>
+                </div>
+            </div>
+        </div>
+
+        <div class="clear"></div>
+    </div>
+</div>
+</div>
+<div class="theme-popover-mask"></div>
+<div class="clear"></div>
+<script type="text/javascript" src="lib/jquery/1.9.1/jquery.min.js"></script>
+<script type="text/javascript" src="lib/layer/1.9.3/layer.js"></script>
+<script type="text/javascript">
+
+    $(function(){
+        var ispayok=false;
+        var isendok=false;
+        $("ul[class='addressChoose'] li").each(function(){
+            $(this).unbind();
+            $(this).click(function(){
+                $("ul[class='addressChoose'] li").removeClass("defaultAddr");
+                $(this).addClass("defaultAddr");
+                var shouhuoren = $("li[class='user-addresslist defaultAddr'] span[class='buy-user']").html();
+                var dianhua = $("li[class='user-addresslist defaultAddr'] span[class='buy-phone']").html();
+                var dizhi = $("li[class='user-addresslist defaultAddr'] span[class='buy--address-detail']").html();
+                $("#buy_user").val(shouhuoren);
+                $("#phone").val(dianhua);
+                $("#address").val(dizhi);
+
+                $("#send").html(dizhi);
+                $("#person").html(shouhuoren);
+                $("#tel").html(dianhua);
+            })
+        })
+
+        $("ul[class='op_express_delivery_hot'] li").each(function(){
+            $(this).unbind();
+            $(this).click(function(){
+                var express = $(this).children("span").attr("id");
+                // alert(express);
+                $("#express").val(express);
+                //运费
+                $("#logisticsCost").val(20);
+                $("ul[class='op_express_delivery_hot'] li").removeClass("selected");
+                $(this).addClass("selected");
+                isendok=!isendok;
+            })
+        })
+
+        $("ul[class='pay-list'] li").each(function(){
+            $(this).unbind();
+            $(this).click(function(){
+                var paytype = $(this).children("span").attr("id");
+                // alert(paytype);
+                $("#paytype").val(paytype);
+                $("ul[class='pay-list'] li").removeClass("selected");
+                $(this).addClass("selected");
+                ispayok=!ispayok;
+            })
+        })
+
+
+        $("#go").click(function(){
+            if(ispayok||isendok){
+                if(isendok){
+                    if(ispayok){
+                        $("#form").submit();
+                    }else{
+                        alert("请选择支付方式");
+                    }
+                }else{
+                    alert("请选择快递方式");
+                }
+            }else{
+                alert("请选择支付方式和快递方式");
+            }
+
+        })
+
+    })
+
+
+</script>
+</body>
+</html>

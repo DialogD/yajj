@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <base href="/">
+    <link href="css/H-ui.min.css" rel="stylesheet" type="text/css" />
+    <link href="css/H-ui.admin.css" rel="stylesheet" type="text/css" />
+    <link href="lib/Hui-iconfont/1.0.1/iconfont.css" rel="stylesheet" type="text/css" />
+    <link rel="stylesheet" href="lib/layui/css/layui.css" media="all">
+</head>
+<body id="userBody">
+<nav class="breadcrumb"><i class="Hui-iconfont">&#xe67f;</i> 首页 <span class="c-gray en">&gt;</span> 订单管理 <span class="c-gray en">&gt;</span> 订单列表 <a class="btn btn-success radius r mr-20" style="line-height:1.6em;margin-top:3px" href="javascript:location.replace(location.href);" title="刷新" ><i class="Hui-iconfont">&#xe68f;</i></a></nav>
+<div class="pd-20">
+    <div class="text-c">
+        <div class="row cl ">
+            <div class="formControls col-3">
+                订单编号: <input type="text" class="input-text" style="width: 200px" id="orderNo" th:value="${orderNo}">
+            </div>
+            <div class="formControls col-3">
+                订单状态: <select id="orderStatus" name="orderStatus" class="select-option">
+                            <option value="-1">全部</option>
+                            <option value="1">未支付</option>
+                            <option value="2">已支付</option>
+                            <option value="3">已发货</option>
+                            <option value="4">已收货</option>
+                            <option value="5">已评价</option>
+                            <option value="6">已取消</option>
+                        </select>
+            </div>
+        </div>
+        <div class="row cl">
+            <div class="cl pd-5">
+                <button type="button"
+                        class="btn btn-success radius" id="" name="" onclick="queryByCondition()">
+                    <i class="Hui-iconfont">&#xe665;</i> 搜索
+                </button>
+            </div>
+        </div>
+    </div>
+    <div class="cl pd-5 bg-1 bk-gray mt-20">
+        <span class="r">共有数据：<strong><span th:text="${pageInfo.total}"></span></strong> 条</span> </div>
+    <table class="table table-border table-bordered table-bg">
+        <thead>
+        <tr>
+            <th scope="col" colspan="10">订单列表</th>
+        </tr>
+        <tr class="text-c">
+            <th width="25"><input type="checkbox" name="query" value=""></th>
+            <th width="80">订单编号</th>
+            <th width="80">支付方式</th>
+            <th width="80">物流方式</th>
+            <th width="80">总金额(元)</th>
+            <th width="80">收货人</th>
+            <th width="18%">收货地址</th>
+            <th width="100">时间</th>
+            <th width="80">状态</th>
+            <th width="80">操作</th>
+        </tr>
+        </thead>
+        <tbody th:each="order : ${pageInfo.list}">
+        <tr class="text-c">
+            <td><input type="checkbox" th:value="${order.id}" name="" class="checkBox"></td>
+            <td width="80" th:text="${order.orderNo}">订单编号</td>
+            <td width="80" th:text="${order.payType}">支付方式</td>
+            <td width="80" th:text="${order.logisticsProviders}">物流方式</td>
+            <td width="80" th:text="${order.totalMoney}">总金额</td>
+            <td width="80" th:text="${order.revicer}">收货人</td>
+            <td width="18%" th:text="${order.reviceAddress}">收货地址</td>
+            <td width="100" th:text="${#dates.format(order.createTime,'yyyy-MM-dd HH:mm:ss')}">time</td>
+            <td width="80" th:text="${order.statusRemark}">状态</td>
+            <td class="td-manage">
+                <a title="订单明细" href="javascript:;" onclick="order_detail('订单明细','order/detail/'+this.id,'800','500')" th:id="${order.orderNo}" class="ml-5" style="text-decoration:none"><i class="Hui-iconfont" style="font-size: 16px">&#xe665;</i></a>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+    <div id="page"></div>
+
+</div>
+
+<script type="text/javascript" src="lib/jquery/1.9.1/jquery.min.js"></script>
+<script type="text/javascript" src="lib/layer/1.9.3/layer.js"></script>
+<script type="text/javascript" src="lib/laypage/1.2/laypage.js"></script>
+<script type="text/javascript" src="lib/My97DatePicker/WdatePicker.js"></script>
+<script type="text/javascript" src="js/H-ui.js"></script>
+<script type="text/javascript" src="js/H-ui.admin.js"></script>
+<script src="lib/layui/layui.js"></script>
+<script>
+
+    layui.use('laypage', function(){
+        var laypage = layui.laypage;
+        //执行一个laypage实例
+        laypage.render({
+            elem: 'page', //注意，这里的 test1 是 ID，不用加 # 号
+            count: [[${pageInfo.total}]] ,//数据总数，从服务端得到
+            limit:[[${pageInfo.pageSize}]],    //每页显示的条数
+            limits:[1,2,3,4,5],   //每页显示条数的选择项（下拉列表）
+            curr:[[${pageInfo.pageNum}]] ,  //当前页
+            groups:5,  //连续出现的页码
+            layout:['count','prev','page','next','refresh','limit','skip'],
+            jump: function(obj, first){
+                var orderNo = $("#orderNo").val();
+                var orderStatus  =$("#orderStatus").val();
+                //首次不执行
+                if(!first){
+                    $("#userBody").load("[[${url}]]?currentPage="+obj.curr+"&pageSize="+obj.limit+"&orderNo="+orderNo+"&orderStatus="+orderStatus);
+
+                }
+            }
+        });
+    });
+
+
+
+</script>
+<script type="text/javascript">
+    //查询
+    function queryByCondition() {
+        //获取到用户输入的用户名
+        var orderNo = $("#orderNo").val();
+        var orderStatus  =$("#orderStatus").val();
+        //局部刷新到后台
+        $("#userBody").load("[[${url}]]",{"orderNo":orderNo,"orderStatus":orderStatus});
+    }
+    /*
+        参数解释：
+        title	标题
+        url		请求的url
+        id		需要操作的数据id
+        w		弹出层宽度（缺省调默认值）
+        h		弹出层高度（缺省调默认值）
+    */
+    function order_detail(title,url,w,h){
+        layer_show(title,url,w,h);
+    }
+
+</script>
+</body>
+</html>

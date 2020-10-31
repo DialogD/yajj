@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <base href="/">
+    <link href="css/H-ui.min.css" rel="stylesheet" type="text/css" />
+    <link href="css/H-ui.admin.css" rel="stylesheet" type="text/css" />
+    <link th:href="@{lib/icheck/icheck.css}" rel="stylesheet" type="text/css" />
+    <link href="lib/Hui-iconfont/1.0.1/iconfont.css" rel="stylesheet" type="text/css" />
+    <title>添加产品</title>
+</head>
+<body>
+<div class="pd-20">
+    <form action="product/add" method="post" class="form form-horizontal" id="form-admin-add">
+        <div class="row cl">
+            <label class="form-label col-3"><span class="c-red">*</span>商品名：</label>
+            <div class="formControls col-5">
+                <input type="text" class="input-text" placeholder="" id="name" name="name" datatype="*2-16" nullmsg="商品名不能为空">
+            </div>
+            <div class="col-4"> </div>
+        </div>
+
+        <div class="row cl">
+            <label class="form-label col-3"><span class="c-red">*</span>价格：</label>
+            <div class="formControls col-5 skin-minimal">
+                <div class="radio-box">
+                    <input type="text" class="input-text" placeholder="" id="price" name="price"  nullmsg="价格不能为空">
+                </div>
+            </div>
+            <div class="col-4"> </div>
+        </div>
+        <div class="row cl">
+            <label class="form-label col-3"><span class="c-red">*</span>促销价：</label>
+            <div class="formControls col-5">
+                <input type="text" class="input-text" placeholder="" id="salePrice" name="salePrice"  nullmsg="促销价不能为空">
+            </div>
+            <div class="col-4"> </div>
+        </div>
+        <div class="row cl">
+            <label class="form-label col-3"><span class="c-red">*</span>卖点：</label>
+            <div class="formControls col-5">
+                <input type="text" class="input-text" name="salePoint" id="salePoint" datatype="*2-16" nullmsg="商品卖点不能为空">
+            </div>
+            <div class="col-4"> </div>
+        </div>
+
+        <div class="row cl">
+            <label class="form-label col-3">图片：</label>
+            <div class="formControls col-5">
+                <input id="file_upload" type="file" name="file_upload"/>
+                <img id="showImg" style="width: 100px;height: 100px;display: none">
+                <input type="hidden" id="image" name="image">
+            </div>
+            <div class="col-4">
+            </div>
+        </div>
+
+        <div class="row cl">
+            <div class="col-9 col-offset-3">
+                <input class="btn btn-primary radius" type="submit" value="&nbsp;&nbsp;提交&nbsp;&nbsp;">
+            </div>
+        </div>
+
+    </form>
+</div>
+<script type="text/javascript" src="lib/jquery/1.9.1/jquery.min.js"></script>
+<script type="text/javascript" th:src="@{lib/icheck/jquery.icheck.min.js}"></script>
+<script type="text/javascript" th:src="@{lib/Validform/5.3.2/Validform.min.js}"></script>
+<script type="text/javascript" src="lib/layer/1.9.3/layer.js"></script>
+<script type="text/javascript" src="js/H-ui.js"></script>
+<script type="text/javascript" src="js/H-ui.admin.js"></script>
+<!--uploadify-->
+<script src="js/jquery.uploadifive.js" type="text/javascript"></script>
+<script type="text/javascript">
+
+    $(function(){
+        $('.skin-minimal input').iCheck({
+            checkboxClass: 'icheckbox-blue',
+            radioClass: 'iradio-blue',
+            increaseArea: '20%'
+        });
+
+        //判断用户名是否已存在
+        $("#username").blur(function () {
+            var username = $(this).val();
+            $.ajax({
+                url:"user/isExistName",
+                type:"GET",
+                data:"username="+username,
+                success:function (data) {
+                    if (data.code==98){
+                        layer.msg(data.message,{icon:5,time:2000});
+                    }
+                }
+            })
+        });
+
+        //初始化上传按钮-添加
+        $('#file_upload').uploadifive({
+            'buttonText'   : '上传',
+            'uploadScript' : 'file/upload',
+            'fileObjName'      : 'file_upload',
+            'onUploadComplete' : function(file,data) {
+                var result = JSON.parse(data);  //转为JSON类型
+                $("#showImg").attr("src",result.data);
+                $("#showImg").show();
+                $("#image").val(result.data)
+            }
+        });
+
+
+        $("#form-admin-add").Validform({
+            tiptype:2,
+            callback:function(){
+                var index = parent.layer.getFrameIndex(window.name);  //获取窗口索引
+                window.parent.location.reload();    //刷新父页面
+                parent.layer.close(index);  // 关闭layer
+                return true;
+            }
+        });
+
+        $("#uploadFile").change(function(){
+            var url = window.URL.createObjectURL(this.files[0]);
+            $("#img").attr("src",url);
+            $("#img").css("width","80px");
+            $("#img").css("heigth","55px");
+        });
+    });
+</script>
+</body>
+</html>

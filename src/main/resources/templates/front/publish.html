@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <base href="/">
+    <title>发布家居空间信息</title>
+    <link rel="stylesheet" th:href="@{css/front/our.css}">
+    <link href="css/H-ui.min.css" rel="stylesheet" type="text/css" />
+    <link href="css/H-ui.admin.css" rel="stylesheet" type="text/css" />
+    <link th:href="@{lib/icheck/icheck.css}" rel="stylesheet" type="text/css" />
+    <link href="lib/Hui-iconfont/1.0.1/iconfont.css" rel="stylesheet" type="text/css" />
+    <link rel="stylesheet" href="lib/layui/css/layui.css" media="all">
+</head>
+<body>
+<div style="width: 60%;margin-top: 200px;margin-left: 20%">
+    <form class="layui-form layui-form-pane" action="space/submit" method="post" id="form-space-add">
+        <div class="layui-form-item layui-form-text">
+            <label class="layui-form-label">家居内容</label>
+            <div class="layui-input-block">
+                <textarea placeholder="请输入家居动态" name="jjDesc" id="jjDesc" class="layui-textarea"></textarea>
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label">家居图片</label>
+            <div class="layui-input-inline">
+                <input id="file_upload" type="file" name="file_upload"/>
+                <img id="showImg" style="width: 100px;height: 100px;display: none">
+                <input type="hidden" id="image" name="image">
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <button class="layui-btn" lay-filter="demo2" type="submit" id="feedSubmit">提交发布</button>
+        </div>
+    </form>
+</div>
+<script type="text/javascript" src="lib/jquery/1.9.1/jquery.min.js"></script>
+<script type="text/javascript" src="lib/layer/1.9.3/layer.js"></script>
+<script type="text/javascript" src="lib/layui/layui.js"></script>
+<script type="text/javascript" th:src="@{lib/Validform/5.3.2/Validform.min.js}"></script>
+<!--uploadify-->
+<script src="js/jquery.uploadifive.js" type="text/javascript"></script>
+<script>
+    $(function () {
+        //初始化上传按钮-添加
+        $('#file_upload').uploadifive({
+            'buttonText'   : '上传',
+            'uploadScript' : 'file/upload',
+            'fileObjName'      : 'file_upload',
+            'onUploadComplete' : function(file,data) {
+                var result = JSON.parse(data);  //转为JSON类型
+                $("#showImg").attr("src",result.data);
+                $("#showImg").show();
+                $("#image").val(result.data)
+            }
+        });
+
+
+        $("#form-space-add").Validform({
+            tiptype:2,
+            callback:function(){
+                var index = parent.layer.getFrameIndex(window.name);  //获取窗口索引
+                window.parent.location.reload();    //刷新父页面
+                parent.layer.close(index);  // 关闭layer
+                return true;
+            }
+        });
+
+        $("#uploadFile").change(function(){
+            var url = window.URL.createObjectURL(this.files[0]);
+            $("#img").attr("src",url);
+            $("#img").css("width","100px");
+            $("#img").css("heigth","65px");
+        });
+    });
+</script>
+</body>
+</html>

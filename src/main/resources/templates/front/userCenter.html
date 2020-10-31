@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <base href="/">
+    <title>会员中心</title>
+    <link rel="stylesheet" th:href="@{css/front/index.css}" type="text/css" >
+    <link rel="stylesheet" type="text/css" media="all" href="css/css_whir.css"/>
+    <link rel="stylesheet" href="lib/layui/css/layui.css" media="all">
+    <link href="lib/Hui-iconfont/1.0.1/iconfont.css" rel="stylesheet" type="text/css" />
+</head>
+<body>
+    <div id="top">
+        <header>
+            <div class="logo">
+                <img src="images/front/index-logo.png"/>
+            </div>
+            <nav>
+                <ul>
+                    <li><a th:href="@{home/index}">首页</a></li>
+                    <li><a th:href="@{product/show}">在线商城</a></li>
+                    <li><a th:href="@{home/feed}">用户反馈</a></li>
+                    <li><a th:href="@{home/space}">家居空间</a></li>
+                    <li class="top"><a>个人中心</a></li>
+                </ul>
+            </nav>
+            <div class="header_right">
+                <a title="退出登录" th:href="@{user/logout}" th:if="${session.loginUser}" style="margin-right: 1px;cursor: pointer;text-decoration:none;">
+                    <i class="Hui-iconfont" style="font-size:28px;">&#xe60b;</i>
+                </a>
+                <a title="购物车" th:href="@{home/center}" style="margin-right: 15px;cursor: pointer;text-decoration:none;">
+                    <i class="Hui-iconfont" style="font-size:28px;">&#xe6b9;</i><span class="badge badge-danger" th:text="${session.cartNum}">0</span>
+                </a>
+                <a th:title="${session.loginUser} == null ? '未登录': ${session.loginUser.username}" style="margin-right: 1px;cursor: pointer;text-decoration:none;">
+                    <img th:if="${session.loginUser}" th:src="${session.loginUser.image}" style="width: 30px;margin-bottom: 0px">
+                    <i class="Hui-iconfont" style="font-size:28px;" th:if="${session.loginUser} == null">&#xe60d;</i>
+                </a>
+                <a title="后台入口" th:if="${session.loginUser.role} != 1" th:href="@{home/backIndex}">
+                    <i class="Hui-iconfont" style="font-size:28px;">&#xe62d;</i>
+                </a>
+            </div>
+        </header>
+    </div>
+    <section class="MemberMain Main">
+
+        <div class="conbox" style="margin-top: 130px">
+            <div class="siderMem">
+                <ul>
+                    <li class="on" style=" cursor:pointer;" value="1"><a class="a1" >个人资料</a></li>
+
+                    <!--<li value="2" style=" cursor:pointer;"><a class="a2">密码修改</a></li>-->
+
+                    <li value="3" style=" cursor:pointer;"><a class="a3">商品订单</a></li>
+
+                    <li value="4" style=" cursor:pointer;"><a class="a4">商品购物车</a></li>
+
+                    <li value="5" style=" cursor:pointer;"><a class="a5">反馈信息</a></li>
+
+                </ul>
+            </div>
+
+            <!--右边内容-->
+            <div class="mainCont" id="authorization">
+
+
+
+            </div>
+            <!--右边内容 end-->
+        </div>
+    </section>
+    <script type="text/javascript" src="lib/jquery/1.9.1/jquery.min.js"></script>
+    <script type="text/javascript" src="lib/layer/1.9.3/layer.js"></script>
+    <script src="lib/layui/layui.js"></script>
+    <script type="text/javascript">
+        $(function () {
+            $("#authorization").load("center/personal");
+        });
+        $(".siderMem ul li").click(function(){
+            $(".siderMem ul li").removeClass("on");
+            $(this).addClass("on");
+            var oid =$(this).val();
+            if (oid==1){
+                $("#authorization").load("center/personal");
+            }/*else if(oid==2){
+                $("#authorization").load("usercenter/passwordupdate")
+            }*/else if (oid==3){
+                $("#authorization").load("order/list");
+            }else if (oid==4){
+                $("#authorization").load("product/showCart");
+            }else if (oid==5){
+                $("#authorization").load("feedback/showFeed");
+            }
+        });
+
+    </script>
+
+</body>
+</html>

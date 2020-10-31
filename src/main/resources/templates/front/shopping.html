@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <base href="/">
+    <title>在线商城</title>
+    <link rel="stylesheet" href="lib/layui/css/layui.css" media="all">
+    <link rel="stylesheet" th:href="@{css/front/shopping.css}">
+    <link href="lib/Hui-iconfont/1.0.1/iconfont.css" rel="stylesheet" type="text/css" />
+</head>
+<body id="userBody">
+    <div id="top">
+        <header>
+            <div class="logo">
+                <img src="images/front/index-logo.png"/>
+            </div>
+            <nav>
+                <ul>
+                    <li><a th:href="@{home/index}">首页</a></li>
+                    <li class="top"><a  th:href="@{product/show}">在线商城</a></li>
+                    <li><a th:href="@{home/feed}">用户反馈</a></li>
+                    <li><a th:href="@{home/space}">家居空间</a></li>
+                    <li><a th:href="@{home/center}">个人中心</a></li>
+                </ul>
+            </nav>
+            <div class="header_right">
+                <a title="退出登录" th:href="@{user/logout}" th:if="${session.loginUser}" style="margin-right: 1px;cursor: pointer;text-decoration:none;">
+                    <i class="Hui-iconfont" style="font-size:28px;">&#xe60b;</i>
+                </a>
+                <a title="购物车" th:href="@{home/center}" style="margin-right: 15px;cursor: pointer;text-decoration:none;">
+                    <i class="Hui-iconfont" style="font-size:28px;">&#xe6b9;</i><span class="badge badge-danger" th:text="${session.cartNum}">0</span>
+                </a>
+                <a th:href="@{home/login}"  th:title="${session.loginUser} == null ? '未登录': ${session.loginUser.username}" style="margin-right: 1px;cursor: pointer;text-decoration:none;">
+                    <img th:if="${session.loginUser}" th:src="${session.loginUser.image}" style="width: 30px;margin-bottom: 0px">
+                    <a th:href="@{home/login}"><i class="Hui-iconfont" style="font-size:28px;" th:if="${session.loginUser} == null">&#xe60d;</i></a>
+                </a>
+            </div>
+        </header>
+    </div>
+    <div id="navigation">
+        <div class="div_navigation">
+            <ul>
+                <li value="0" class="proCss" onclick="switchPro(this,this.value)">全部</li>
+                <li value="1" onclick="switchPro(this,this.value)">家具</li>
+                <li value="2" onclick="switchPro(this,this.value)">餐厨</li>
+                <li value="3" onclick="switchPro(this,this.value)">灯饰</li>
+                <li value="4" onclick="switchPro(this,this.value)">家纺</li>
+            </ul>
+        </div>
+    </div>
+    <br>
+    <div class="layui-row">
+        <div class="layui-col-md4" th:each="product : ${pageInfo.list}">
+            <div class="grid-demo grid-demo-bg1">
+                <img th:src="${product.image}" th:id="${product.id}" style="width: 300px;cursor: pointer" href="javascript:;" onclick="productDetail(this.id)"/>
+                <p th:text="${product.name}"></p>
+                <p th:text="${product.salePoint}"></p>
+            </div>
+        </div>
+    </div>
+
+    <br>
+    <div id="page" style="margin-left: 28%"></div>
+
+    <script type="text/javascript" src="lib/jquery/1.9.1/jquery.min.js"></script>
+    <script type="text/javascript" src="lib/layer/1.9.3/layer.js"></script>
+    <script type="text/javascript" src="lib/laypage/1.2/laypage.js"></script>
+    <script type="text/javascript" src="lib/My97DatePicker/WdatePicker.js"></script>
+    <script src="lib/layui/layui.js"></script>
+<script>
+    layui.use('laypage', function(){
+        var laypage = layui.laypage;
+        //执行一个laypage实例
+        laypage.render({
+            elem: 'page', //注意，这里的 test1 是 ID，不用加 # 号
+            count: [[${pageInfo.total}]] ,//数据总数，从服务端得到
+            limit:[[${pageInfo.pageSize}]],    //每页显示的条数
+            limits:[1,2,3,4,5,6],   //每页显示条数的选择项（下拉列表）
+            curr:[[${pageInfo.pageNum}]] ,  //当前页
+            groups:5,  //连续出现的页码
+            layout:['count','prev','page','next','refresh','limit','skip'],
+            jump: function(obj, first){
+                console.log(obj.curr); //得到当前页，以便向服务端请求对应页的数据。
+                console.log(obj.limit); //得到每页显示的条数
+                //首次不执行
+                if(!first){
+                    $("#userBody").load("[[${url}]]?currentPage="+obj.curr+"&pageSize="+obj.limit+"&type="+[[${type}]]);
+                }
+            }
+        });
+    });
+</script>
+<script>
+    function switchPro(obj,value) {
+        $("#userBody").load("[[${url}]]",{"type":value});
+    }
+
+    function productDetail(id) {
+        location.href="product/detail?id="+id;
+    }
+</script>
+</body>
+</html>

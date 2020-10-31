@@ -1,0 +1,235 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.dialogd.yajj.mapper.OrderMapper">
+  <resultMap id="BaseResultMap" type="com.dialogd.yajj.entity.Order">
+    <id column="id" jdbcType="BIGINT" property="id" />
+    <result column="user_id" jdbcType="BIGINT" property="userId" />
+    <result column="pay_type_id" jdbcType="INTEGER" property="payTypeId" />
+    <result column="logistics_providers_id" jdbcType="INTEGER" property="logisticsProvidersId" />
+    <result column="order_no" jdbcType="VARCHAR" property="orderNo" />
+    <result column="logistics_no" jdbcType="VARCHAR" property="logisticsNo" />
+    <result column="logistics_cost" jdbcType="BIGINT" property="logisticsCost" />
+    <result column="total_money" jdbcType="BIGINT" property="totalMoney" />
+    <result column="order_status" jdbcType="TINYINT" property="orderStatus" />
+    <result column="revice_address" jdbcType="VARCHAR" property="reviceAddress" />
+    <result column="revicer" jdbcType="VARCHAR" property="revicer" />
+    <result column="phone" jdbcType="CHAR" property="phone" />
+    <result column="flag" jdbcType="BIT" property="flag" />
+    <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
+    <result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    id, user_id, pay_type_id, logistics_providers_id, order_no, logistics_no, logistics_cost, 
+    total_money, order_status, revice_address, revicer, phone, flag, create_time, update_time
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from t_order
+    where id = #{id,jdbcType=BIGINT}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
+    delete from t_order
+    where id = #{id,jdbcType=BIGINT}
+  </delete>
+  <insert id="insert" parameterType="com.dialogd.yajj.entity.Order">
+    insert into t_order (id, user_id, pay_type_id, 
+      logistics_providers_id, order_no, logistics_no, 
+      logistics_cost, total_money, order_status, 
+      revice_address, revicer, phone, 
+      flag, create_time, update_time
+      )
+    values (#{id,jdbcType=BIGINT}, #{userId,jdbcType=BIGINT}, #{payTypeId,jdbcType=INTEGER}, 
+      #{logisticsProvidersId,jdbcType=INTEGER}, #{orderNo,jdbcType=VARCHAR}, #{logisticsNo,jdbcType=VARCHAR}, 
+      #{logisticsCost,jdbcType=BIGINT}, #{totalMoney,jdbcType=BIGINT}, #{orderStatus,jdbcType=TINYINT}, 
+      #{reviceAddress,jdbcType=VARCHAR}, #{revicer,jdbcType=VARCHAR}, #{phone,jdbcType=CHAR}, 
+      #{flag,jdbcType=BIT}, #{createTime,jdbcType=TIMESTAMP}, #{updateTime,jdbcType=TIMESTAMP}
+      )
+  </insert>
+  <insert id="insertSelective" parameterType="com.dialogd.yajj.entity.Order">
+    insert into t_order
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        id,
+      </if>
+      <if test="userId != null">
+        user_id,
+      </if>
+      <if test="payTypeId != null">
+        pay_type_id,
+      </if>
+      <if test="logisticsProvidersId != null">
+        logistics_providers_id,
+      </if>
+      <if test="orderNo != null">
+        order_no,
+      </if>
+      <if test="logisticsNo != null">
+        logistics_no,
+      </if>
+      <if test="logisticsCost != null">
+        logistics_cost,
+      </if>
+      <if test="totalMoney != null">
+        total_money,
+      </if>
+      <if test="orderStatus != null">
+        order_status,
+      </if>
+      <if test="reviceAddress != null">
+        revice_address,
+      </if>
+      <if test="revicer != null">
+        revicer,
+      </if>
+      <if test="phone != null">
+        phone,
+      </if>
+      <if test="flag != null">
+        flag,
+      </if>
+      <if test="createTime != null">
+        create_time,
+      </if>
+      <if test="updateTime != null">
+        update_time,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        #{id,jdbcType=BIGINT},
+      </if>
+      <if test="userId != null">
+        #{userId,jdbcType=BIGINT},
+      </if>
+      <if test="payTypeId != null">
+        #{payTypeId,jdbcType=INTEGER},
+      </if>
+      <if test="logisticsProvidersId != null">
+        #{logisticsProvidersId,jdbcType=INTEGER},
+      </if>
+      <if test="orderNo != null">
+        #{orderNo,jdbcType=VARCHAR},
+      </if>
+      <if test="logisticsNo != null">
+        #{logisticsNo,jdbcType=VARCHAR},
+      </if>
+      <if test="logisticsCost != null">
+        #{logisticsCost,jdbcType=BIGINT},
+      </if>
+      <if test="totalMoney != null">
+        #{totalMoney,jdbcType=BIGINT},
+      </if>
+      <if test="orderStatus != null">
+        #{orderStatus,jdbcType=TINYINT},
+      </if>
+      <if test="reviceAddress != null">
+        #{reviceAddress,jdbcType=VARCHAR},
+      </if>
+      <if test="revicer != null">
+        #{revicer,jdbcType=VARCHAR},
+      </if>
+      <if test="phone != null">
+        #{phone,jdbcType=CHAR},
+      </if>
+      <if test="flag != null">
+        #{flag,jdbcType=BIT},
+      </if>
+      <if test="createTime != null">
+        #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updateTime != null">
+        #{updateTime,jdbcType=TIMESTAMP},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.dialogd.yajj.entity.Order">
+    update t_order
+    <set>
+      <if test="userId != null">
+        user_id = #{userId,jdbcType=BIGINT},
+      </if>
+      <if test="payTypeId != null">
+        pay_type_id = #{payTypeId,jdbcType=INTEGER},
+      </if>
+      <if test="logisticsProvidersId != null">
+        logistics_providers_id = #{logisticsProvidersId,jdbcType=INTEGER},
+      </if>
+      <if test="orderNo != null">
+        order_no = #{orderNo,jdbcType=VARCHAR},
+      </if>
+      <if test="logisticsNo != null">
+        logistics_no = #{logisticsNo,jdbcType=VARCHAR},
+      </if>
+      <if test="logisticsCost != null">
+        logistics_cost = #{logisticsCost,jdbcType=BIGINT},
+      </if>
+      <if test="totalMoney != null">
+        total_money = #{totalMoney,jdbcType=BIGINT},
+      </if>
+      <if test="orderStatus != null">
+        order_status = #{orderStatus,jdbcType=TINYINT},
+      </if>
+      <if test="reviceAddress != null">
+        revice_address = #{reviceAddress,jdbcType=VARCHAR},
+      </if>
+      <if test="revicer != null">
+        revicer = #{revicer,jdbcType=VARCHAR},
+      </if>
+      <if test="phone != null">
+        phone = #{phone,jdbcType=CHAR},
+      </if>
+      <if test="flag != null">
+        flag = #{flag,jdbcType=BIT},
+      </if>
+      <if test="createTime != null">
+        create_time = #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updateTime != null">
+        update_time = #{updateTime,jdbcType=TIMESTAMP},
+      </if>
+    </set>
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.dialogd.yajj.entity.Order">
+    update t_order
+    set user_id = #{userId,jdbcType=BIGINT},
+      pay_type_id = #{payTypeId,jdbcType=INTEGER},
+      logistics_providers_id = #{logisticsProvidersId,jdbcType=INTEGER},
+      order_no = #{orderNo,jdbcType=VARCHAR},
+      logistics_no = #{logisticsNo,jdbcType=VARCHAR},
+      logistics_cost = #{logisticsCost,jdbcType=BIGINT},
+      total_money = #{totalMoney,jdbcType=BIGINT},
+      order_status = #{orderStatus,jdbcType=TINYINT},
+      revice_address = #{reviceAddress,jdbcType=VARCHAR},
+      revicer = #{revicer,jdbcType=VARCHAR},
+      phone = #{phone,jdbcType=CHAR},
+      flag = #{flag,jdbcType=BIT},
+      create_time = #{createTime,jdbcType=TIMESTAMP},
+      update_time = #{updateTime,jdbcType=TIMESTAMP}
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+
+  <select id="selectPage" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from t_order where user_id=#{userId}
+    <if test="orderStatus!=0">
+      and order_status=#{orderStatus}
+    </if>
+    and flag=1
+    order by create_time desc
+  </select>
+
+  <select id="getConditionPage" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from t_order where 1=1
+    <if test="orderNo != null and orderNo != ''">
+      and  order_no = #{orderNo}
+    </if>
+    <if test="orderStatus != null and orderStatus != -1">
+      and order_status = #{orderStatus}
+    </if>
+  </select>
+</mapper>

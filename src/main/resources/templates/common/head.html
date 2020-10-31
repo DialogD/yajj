@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+
+</head>
+<body>
+
+    <div class="navbar-fixed-top" role="navigation" th:fragment="head">
+        <header>
+            <div class="logo">
+                <img src="images/front/index-logo.png"/>
+            </div>
+            <nav>
+                <ul>
+                    <li class="top"><a th:href="@{home/index}">首页</a></li>
+                    <li><a th:href="@{product/show}">在线商城</a></li>
+                    <li><a th:href="@{home/our}">联系我们</a></li>
+                    <li><a th:href="@{home/news}">新闻动态</a></li>
+                    <li><a th:href="@{home/center}">会员中心</a></li>
+                </ul>
+            </nav>
+            <div class="header_right">
+                <img src="images/front/index-search.png"/>
+                <img src="images/front/index-login.png"/>
+                <img src="images/front/index-guowuche.png"/>
+            </div>
+        </header>
+    </div>
+    <script type="text/javascript" src="lib/jquery/1.9.1/jquery.min.js"></script>
+    <script type="text/javascript">
+        $(".navbar-fixed-top header nav ul li").click(function () {
+            $(".navbar-fixed-top header nav ul li").removeClass("top");
+            $(this).addClass("top");
+        });
+    </script>
+</body>
+</html>

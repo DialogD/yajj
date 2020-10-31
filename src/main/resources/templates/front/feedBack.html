@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <base href="/">
+    <title>用户反馈</title>
+    <link rel="stylesheet" th:href="@{css/front/our.css}">
+    <link href="lib/Hui-iconfont/1.0.1/iconfont.css" rel="stylesheet" type="text/css" />
+    <link rel="stylesheet" href="lib/layui/css/layui.css" media="all">
+</head>
+<body>
+<div id="top">
+    <header>
+        <div class="logo">
+            <img src="images/front/index-logo.png"/>
+        </div>
+        <nav>
+            <ul>
+                <li><a th:href="@{home/index}">首页</a></li>
+                <li><a th:href="@{product/show}">在线商城</a></li>
+                <li class="top"><a th:href="@{home/feed}">用户反馈</a></li>
+                <li><a th:href="@{home/space}">家居空间</a></li>
+                <li><a th:href="@{home/center}">个人中心</a></li>
+            </ul>
+        </nav>
+        <div class="header_right">
+            <a title="退出登录" th:href="@{user/logout}" th:if="${session.loginUser}" style="margin-right: 1px;cursor: pointer;text-decoration:none;">
+                <i class="Hui-iconfont" style="font-size:28px;">&#xe60b;</i>
+            </a>
+            <a title="购物车" th:href="@{home/center}" style="margin-right: 15px;cursor: pointer;text-decoration:none;">
+                <i class="Hui-iconfont" style="font-size:28px;">&#xe6b9;</i><span class="badge badge-danger" th:text="${session.cartNum}">0</span>
+            </a>
+            <a th:title="${session.loginUser} == null ? '未登录': ${session.loginUser.username}" style="margin-right: 1px;cursor: pointer;text-decoration:none;">
+                <img th:if="${session.loginUser}" th:src="${session.loginUser.image}" style="width: 30px;margin-bottom: 0px">
+                <i class="Hui-iconfont" style="font-size:28px;" th:if="${session.loginUser} == null">&#xe60d;</i>
+            </a>
+        </div>
+    </header>
+</div>
+<div style="width: 60%;margin-top: 200px;margin-left: 20%">
+    <form class="layui-form layui-form-pane">
+        <div class="layui-form-item">
+            <label class="layui-form-label">标题</label>
+            <div class="layui-input-inline">
+                <input type="text" name="title" id="title" lay-verify="required" placeholder="请输入标题" autocomplete="off" class="layui-input">
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label">联系方式</label>
+            <div class="layui-input-inline">
+                <input type="text" name="phone" id="phone" autocomplete="off" placeholder="请输入联系方式" class="layui-input">
+            </div>
+        </div>
+        <div class="layui-form-item layui-form-text">
+            <label class="layui-form-label">反馈内容</label>
+            <div class="layui-input-block">
+                <textarea placeholder="请输入反馈内容" name="content" id="content" class="layui-textarea"></textarea>
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <button class="layui-btn" lay-filter="demo2" id="feedSubmit">提交反馈</button>
+        </div>
+    </form>
+</div>
+
+
+<script type="text/javascript" src="lib/jquery/1.9.1/jquery.min.js"></script>
+<script type="text/javascript" src="lib/layer/1.9.3/layer.js"></script>
+<script type="text/javascript" src="lib/layui/layui.js"></script>
+<script>
+    $(function () {
+       $("#feedSubmit").click(function () {
+           var title = $("#title").val();
+           var phone = $("#phone").val();
+           var content = $("#content").val();
+           if(title.length < 3){
+               layer.msg("标题至少3个字符",{icon:6,time:2000});
+               return false;
+           }
+           if (title.length > 15){
+               layer.msg("标题最多15个字符",{icon:6,time:2000});
+               return false;
+           }
+           var phoneReg=/^[1][3,4,5,7,8][0-9]{9}$/;
+           if (!phoneReg.test(phone)){
+               layer.msg("手机号格式不正确",{icon:6,time:2000});
+               return false;
+           }
+           if (content.length==0){
+               layer.msg("反馈内容不能为空",{icon:6,time:2000});
+               return false;
+           }
+           var formData = new FormData();
+           formData.append("titile",title);
+           formData.append("phone",phone);
+           formData.append("content",content);
+           $.ajax({
+               url: "/feedback/submit",
+               type: 'POST',
+               data: formData,
+               processData: false, // tell jQuery not to process the data
+               contentType: false, // tell jQuery not to set contentType
+               success:function (data) {
+                   console.log(data.code);
+                   debugger;
+                   if (data.code == 200){
+                       layer.msg(data.message,{icon:6,time:2000},function () {
+                           location.reload();  //刷新
+                       });
+                   }else {
+                       layer.msg(data.message,{icon:5,time:2000});
+                   }
+               }
+           });
+       }) ;
+    });
+</script>
+</body>
+</html>

@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <base href="/">
+    <title>购物车</title>
+    <link rel="stylesheet" type="text/css" media="all" href="css/css_whir.css"/>
+    <script type="text/javascript" src="Scripts/jquery.SuperSlide.2.1.1.js"></script>
+    <link rel="stylesheet" href="lib/layui/css/layui.css" media="all">
+    <link href="lib/Hui-iconfont/1.0.1/iconfont.css" rel="stylesheet" type="text/css" />
+</head>
+<body>
+    <div class="bookBox Dt">
+        <!--start-->
+        <div class=" templet_jobs_006 ">
+            <ul>
+                <p class="status">
+                    <span class="s1"><input type="checkbox" lay-skin="primary" id="check"/>全部</span>
+                    <span class="s2">订单商品</span>
+
+                    <span class="s4">订单金额</span>
+                    <span class="s5">数量</span>
+                    <span class="s6">小计</span>
+                    <span class="s7">操作</span>
+                </p>
+                <div class="clear"></div>
+                <!--从这里循环-->
+                <li>
+                    <div class="carbox" th:each="cart : ${cartList}">
+                        <div class="sp6">
+                            <a onclick="del(this.id)" th:id="${cart.id}" style="cursor:pointer;">删除</a>
+                        </div>
+                        <div class="sp5"><span th:text="|￥${cart.price*cart.count}|"></span></div>
+                        <div class="sp4">
+                            <!--<a class="cut" onclick="sub(this.id)" th:id="${cart.id}">-</a>-->
+                            <input type="text" style="text-align:left;vertical-align:middle;margin-left: 35px" th:value="${cart.count}"/>
+                            <!--<a class="add" onclick="add(this.id)" th:id="${cart.id}">+</a>-->
+                        </div>
+                        <div class="sp3">
+                            <span th:text="|￥${cart.price}|"></span>
+                        </div>
+
+                        <div class="sp1">
+                            <!--<a href="#"><img src="images/order_pic1.jpg" width="101" height="55"></a>-->
+                            <h6 class="h6"><a th:text="${cart.productName}" style="margin-left: 32px"></a></h6>
+
+                        </div>
+                        <div class="sp0"><span><input type="checkbox" th:value="${cart.id}" class="checkSingle"/></span></div>
+                    </div>
+                </li>
+                <!--从这里循环end-->
+            </ul>
+            <div class="clear"></div>
+            <p class="pay-total">
+                <span class="sp2">应付总额￥<em th:text="${totalPrice}">0</em></span>
+                <span class="sp1">已选<em th:text="${cartList.size()}"></em>件商品</span>
+            </p>
+        </div>
+        <!--end-->
+    </div>
+
+    <div class="last-submit" style="margin-top: 20px;margin-right: 30px">
+        <button type="button" style="font-size: 18px" class="layui-btn layui-btn-radius" id="orderSubmit">结算</button>
+    </div>
+    <script type="text/javascript" src="lib/jquery/1.9.1/jquery.min.js"></script>
+    <script type="text/javascript" src="lib/layer/1.9.3/layer.js"></script>
+    <script type="text/javascript">
+        $(function () {
+            $("#check").click(function () {
+                if (this.checked){
+                    $(".checkSingle").attr("checked",true);
+                }else {
+                    $(".checkSingle").attr("checked",false);
+                }
+            });
+            $("#orderSubmit").click(function () {
+                var checkItem = $(".checkSingle:checked");
+
+                if (checkItem.length == 0){
+                    layer.msg("请选择需要结算的商品",{icon:6,time:2000});
+                    return;
+                }
+                var ids = [];
+                for (var i=0;i<checkItem.length;i++){
+                    ids.push(checkItem[i].value);
+                }
+                location.href="product/settleCart?ids="+ids;
+            })
+
+        })
+
+    </script>
+    <script type="text/javascript">
+        function del(id){
+            $.ajax({
+                url:"product/delCart",
+                type:"GET",
+                data:"id="+id,
+                success:function(data){
+                    if (data.code == 200){
+                        layer.msg(data.message,{icon:6,time:2000},function () {
+                            location.reload();  //刷新
+                        });
+                    }else {
+                        layer.msg(data.message,{icon:5,time:2000});
+                    }
+                }
+            })
+        }
+
+    </script>
+</body>
+</html>

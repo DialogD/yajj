@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <base href="/">
+    <title>订单</title>
+    <link rel="stylesheet" type="text/css" media="all" href="css/css_whir.css"/>
+    <link rel="stylesheet" href="lib/layui/css/layui.css" media="all">
+    <link href="lib/Hui-iconfont/1.0.1/iconfont.css" rel="stylesheet" type="text/css" />
+</head>
+<body id="orderBody">
+    <div class="bookBox Dt">
+        <!--右边内容-->
+        <div class="mainCont">
+
+            <div class="bookBox Dt">
+                <!--start-->
+                <div class="templet_jobs_005">
+                    <nav class="Category2">
+                        <ul style="margin-left: 1px">
+                            <li class="on" value="0" onclick="switchStatus(this,this.value)">全部</li>
+                            <li value="1" onclick="switchStatus(this,this.value)">待支付</li>
+                            <li value="2" onclick="switchStatus(this,this.value)">待发货</li>
+                            <li value="3" onclick="switchStatus(this,this.value)">待收货</li>
+                            <li value="4" onclick="switchStatus(this,this.value)">待评价</li>
+                            <li value="5" onclick="switchStatus(this,this.value)">已取消</li>
+                        </ul>
+                    </nav>
+                    <div class="bookcontent">
+                        <!--全部-->
+                        <ul style="display: block;">
+                            <p class="status">
+                                <span class="s1">订单编号</span>
+                                <span class="s2">收货电话</span>
+                                <span class="s3">收货人</span>
+                                <span class="s4">订单金额</span>
+                                <span class="s5">下单时间</span>
+                                <span class="s6">订单状态</span>
+                                <span class="s7">操作</span>
+                            </p>
+                            <div class="clear"></div>
+                            <!--从这里循环-->
+                            <li>
+                                <div class="carbox" th:each="order : ${pageInfo.list}">
+                                    <div class="sp6">
+                                        <a title="订单明细" href="javascript:;" onclick="order_detail('订单明细','order/detail/'+this.id,'800','500')" th:id="${order.orderNo}" class="ml-5" style="text-decoration:none"><i class="Hui-iconfont" style="font-size: 16px">&#xe665;</i></a>
+                                        <!--<a href="#" style=" cursor:pointer;">详情</a>-->
+                                        <!--<a class="status-list" data="取消" rel="100451693" href="javascript:void(0)" style=" cursor:pointer;">支付</a>-->
+                                    </div>
+                                    <div class="sp5">
+                                        <span th:if="${order.orderStatus} == 1" th:text="未支付">未支付</span>
+                                        <span th:if="${order.orderStatus} == 2" th:text="已支付">已支付</span>
+                                        <span th:if="${order.orderStatus} == 3" th:text="已发货">已发货</span>
+                                        <span th:if="${order.orderStatus} == 4" th:text="已收货">已收货</span>
+                                        <span th:if="${order.orderStatus} == 5" th:text="已评价">已评价</span>
+                                        <span th:if="${order.orderStatus} == 6" th:text="已取消">已取消</span>
+                                    </div>
+                                    <div class="sp4"><span style="word-break: break-all;white-space: normal;" th:text="${#dates.format(order.createTime,'yyyy-MM-dd HH:mm:ss')}">时间</span></div>
+                                    <div class="sp3">
+                                        <span th:text="|￥${order.totalMoney}|">￥1802.00</span>
+                                    </div>
+                                    <div class="sp2" th:text="${order.revicer}"><span>收货人</span></div>
+                                    <div class="sp1">
+                                        <!--<a href="#"><img src="#" width="101" height="55"></a>-->
+                                        <h6 class="h6"><a th:text="${order.phone}">收货电话</a></h6>
+
+                                    </div>
+                                    <div class="sp0"><span style="word-break: break-all;white-space: normal;" th:text="${order.orderNo}">订单编号</span></div>
+                                </div>
+                            </li>
+                            <!--从这里循环end-->
+                        </ul>
+
+                    </div>
+
+                </div>
+                <!--end-->
+                <div><span class="r">共有数据：<strong><span th:text="${pageInfo.total}" style="font-size: 15px"></span></strong> 条</span></div>
+            </div>
+         <!--右边内容 end-->
+        </div>
+
+    </div>
+    <script type="text/javascript" src="Scripts/jquery.SuperSlide.2.1.1.js"></script>
+    <script type="text/javascript" src="lib/jquery/1.9.1/jquery.min.js"></script>
+    <script type="text/javascript" src="lib/layer/1.9.3/layer.js"></script>
+    <script type="text/javascript" src="lib/laypage/1.2/laypage.js"></script>
+    <script type="text/javascript" src="lib/My97DatePicker/WdatePicker.js"></script>
+    <script type="text/javascript" src="js/H-ui.js"></script>
+    <script type="text/javascript" src="js/H-ui.admin.js"></script>
+    <script src="lib/layui/layui.js"></script>
+    <script type="text/javascript">
+        function switchStatus(obj,value) {
+            $(".templet_jobs_005 nav ul li").removeClass("on");
+            $(obj).addClass("on");
+            $(".mainCont").load("[[${url}]]",{"status":value});
+        }
+        function order_detail(title,url,w,h){
+            layer_show(title,url,w,h);
+        }
+    </script>
+</body>
+</html>

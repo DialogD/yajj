@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <base href="/">
+    <link href="css/H-ui.min.css" rel="stylesheet" type="text/css" />
+    <link href="css/H-ui.admin.css" rel="stylesheet" type="text/css" />
+    <link href="css/style.css" rel="stylesheet" type="text/css" />
+    <link href="lib/Hui-iconfont/1.0.1/iconfont.css" rel="stylesheet" type="text/css" />
+    <link rel="stylesheet" href="lib/layui/css/layui.css" media="all">
+</head>
+<body id="userBody">
+<div class="pd-20">
+    <div class="cl pd-5 bg-1 bk-gray mt-20">
+        <span class="r">共有数据：<strong><span th:text="${size}"></span></strong> 条</span> </div>
+    <table class="table table-border table-bordered table-bg">
+        <thead>
+        <tr>
+            <th scope="col" colspan="10">订单详情列表</th>
+        </tr>
+        <tr class="text-c">
+            <th width="80">订单编号</th>
+            <th width="80">商品名称</th>
+            <th width="18%">单价(元)</th>
+            <th width="18%">数量(件)</th>
+            <th width="80">金额(元)</th>
+            <th width="18%">时间</th>
+        </tr>
+        </thead>
+        <tbody th:each="detail : ${orderDetailList}">
+        <tr class="text-c">
+            <td width="80" th:text="${detail.orderId}">订单编号</td>
+            <td width="80" th:text="${detail.productName}">商品名称</td>
+            <td width="18%" th:text="${detail.productPrice/100}">单价</td>
+            <td width="18%" th:text="${detail.count}">数量</td>
+            <td width="80" th:text="${detail.count * detail.productPrice/100}">金额</td>
+            <td width="18%" th:text="${#dates.format(detail.createTime,'yyyy-MM-dd HH:mm:ss')}">time</td>
+        </tr>
+        </tbody>
+    </table>
+</div>
+
+<script type="text/javascript" src="lib/jquery/1.9.1/jquery.min.js"></script>
+<script type="text/javascript" src="lib/layer/1.9.3/layer.js"></script>
+<script type="text/javascript" src="lib/laypage/1.2/laypage.js"></script>
+<script type="text/javascript" src="lib/My97DatePicker/WdatePicker.js"></script>
+<script type="text/javascript" src="js/H-ui.js"></script>
+<script type="text/javascript" src="js/H-ui.admin.js"></script>
+<script src="lib/layui/layui.js"></script>
+</body>
+</html>

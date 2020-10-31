@@ -1,0 +1,52 @@
+server:
+  port: 8099
+  servlet:
+    context-path: /
+spring:
+  thymeleaf:
+    cache: false
+  datasource:
+    url: jdbc:mysql://localhost:3306/yajj?useUnicode=true&characterEncoding=utf-8&serverTimezone=GMT%2b8
+    username: root
+    password: 123
+    driver-class-name: com.mysql.jdbc.Driver
+    druid:
+      initial-size: 10
+      max-active: 100
+      min-idle: 10
+  #设置对输入参数的格式化，这样后台的接口就可以接收Date类型
+  mvc:
+    date-format: yyyy-MM-dd
+  #设置对输出参数的格式化(后台响应(json)时间格式)
+  jackson:
+    date-format: yyyy-MM-dd
+    time-zone: GMT+8
+  servlet:
+    multipart:
+      max-file-size: 10MB
+      enabled: true
+      file-size-threshold: 0
+      max-request-size: 10MB
+  redis:
+    host: 127.0.0.1
+    port: 6379
+    password: java1907
+
+mybatis:
+  mapper-locations: classpath:/mapper/*.xml
+  configuration:
+    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
+
+#上传文件FastDFS
+fdfs:
+  so-timeout: 1500
+  connect-timeout: 600
+  pool:
+    jmx-enabled: false
+  thumb-image:
+    width: 100
+    height: 100
+  tracker-list: 127.0.0.1:22122
+
+image:
+  server: http://127.0.0.1/

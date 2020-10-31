@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <base href="/">
+    <link href="css/H-ui.min.css" rel="stylesheet" type="text/css" />
+    <link href="css/H-ui.admin.css" rel="stylesheet" type="text/css" />
+    <link th:href="@{lib/icheck/icheck.css}" rel="stylesheet" type="text/css" />
+    <link href="lib/Hui-iconfont/1.0.1/iconfont.css" rel="stylesheet" type="text/css" />
+    <link rel="stylesheet" href="lib/layui/css/layui.css" media="all">
+    <title>回复信息</title>
+</head>
+<body>
+<div class="pd-20">
+    <form action="/feedback/reply" method="post" class="form form-horizontal" id="form-admin-add">
+        <input type="hidden" name="id" th:value="${feed.id}">
+        <div class="row cl">
+            <div class="formControls col-5">
+                <div class="layui-form-item layui-form-text">
+                    <label class="layui-form-label">回复内容：</label>
+                    <div class="layui-input-block">
+                        <textarea placeholder="请输入回复内容" name="replyMark" id="replyMark" style="width: 400px" class="layui-textarea"></textarea>
+                    </div>
+                </div>
+            </div>
+            <div class="col-4"> </div>
+        </div>
+        <div class="row cl">
+            <div class="col-9 col-offset-3">
+                <input class="btn btn-primary radius" type="submit" value="&nbsp;&nbsp;回复提交&nbsp;&nbsp;">
+            </div>
+        </div>
+
+    </form>
+</div>
+<script type="text/javascript" src="lib/jquery/1.9.1/jquery.min.js"></script>
+<script type="text/javascript" th:src="@{lib/icheck/jquery.icheck.min.js}"></script>
+<script type="text/javascript" th:src="@{lib/Validform/5.3.2/Validform.min.js}"></script>
+<script type="text/javascript" src="lib/layer/1.9.3/layer.js"></script>
+<script type="text/javascript" src="js/H-ui.js"></script>
+<script type="text/javascript" src="js/H-ui.admin.js"></script>
+<script type="text/javascript" src="lib/layui/layui.js"></script>
+<script type="text/javascript">
+
+    $(function(){
+        $("#form-admin-add").Validform({
+            tiptype:2,
+            callback:function(){
+                var index = parent.layer.getFrameIndex(window.name);  //获取窗口索引
+                window.parent.location.reload();    //刷新父页面
+                parent.layer.close(index);  // 关闭layer
+                return true;
+            }
+        });
+
+    });
+</script>
+</body>
+</html>

@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <base href="/">
+    <title>个人资料修改</title>
+    <link rel="stylesheet" type="text/css" media="all" href="css/css_whir.css"/>
+    <script type="text/javascript" src="Scripts/jquery.SuperSlide.2.1.1.js"></script>
+    <link rel="stylesheet" href="lib/layui/css/layui.css" media="all">
+</head>
+<body>
+    <div class="mainCont">
+        <div class="mainCont">
+            <!--start-->
+            <div class="infor-box">
+                <div class="table-box box1">
+                    <h3><span>个人资料修改</span></h3>
+                    <table>
+                        <tr>
+                            <td>
+                                <input type="hidden" id="id" th:value="${user.id}">
+                                <span>用户名:</span>
+                                <input disabled="true" type="text" class="text" id="username" th:value="${user.username}" style="cursor: pointer;" />
+                            </td>
+                        </tr>
+                        <tr><td></td></tr>
+                        <tr>
+                            <td><span>邮箱:</span><input type="text" class="text" id="email" th:value="${user.email}" /></td>
+                        </tr>
+                        <tr><td></td></tr>
+                        <tr>
+                            <td><span>手机号码:</span><input type="text" class="text" id="phone" th:value="${user.phone}" /></td>
+                        </tr>
+                        <tr><td></td></tr>
+                        <tr>
+                            <td>
+                                <span>性别:</span>
+                                <span><input type="radio" class="gender" th:checked="${user.gender=='男'} ? true : false" name="gender" value="男" />男</span>
+                                <span><input type="radio" class="gender" th:checked="${user.gender=='女'} ? true : false" name="gender" value="女" />女</span>
+                            </td>
+                        </tr>
+                    </table>
+                </div>
+                <!--头像-->
+                <div class="table-box box2">
+                    <h3><span>个人头像修改</span></h3>
+                    <p class="p1"><a class="img"><img id="img" th:src="${user.image}" onerror="this.src='images/nofind.jpg'" /></a></p>
+                    <div class="p2">
+                        <!--上传文件start-->
+                       <!-- <div class="FileBox demo2">
+                            <div class="uploadBox">
+                                <input name="uUrl" type="file" class="file" id="uploadFile" />
+                                <span class="Btn">上传文件</span>
+                            </div>
+                            <input name="" class="text" type="text" id="FileName" />
+                            <div class="clear"></div>
+                            <p>限JPG格式，100x100px</p>
+                            <input type="button" id="imageButton" value="确定上传" />
+                            <div class="clear"></div>
+                        </div>-->
+                        <!--上传文件end-->
+                    </div>
+                </div>
+                <!--头像end-->
+            </div>
+            <!--end-->
+            <p class="member-change"><a id="updateButton">修改</a></p>
+        </div>
+    </div>
+    <script type="text/javascript" src="lib/jquery/1.9.1/jquery.min.js"></script>
+    <script type="text/javascript" src="lib/layer/1.9.3/layer.js"></script>
+    <script type="text/javascript" src="lib/layui/layui.js"></script>
+    <script>
+        $(function () {
+            $("#updateButton").click(function () {
+                debugger;
+                var id = $("#id").val();
+                var email = $("#email").val();
+                var phone = $("#phone").val();
+                // var gender = $(".gender").val();
+                var gender = $('input:radio[name="gender"]:checked').val();
+                var phoneReg=/^[1][3,4,5,7,8][0-9]{9}$/;
+                if (!phoneReg.test(phone)){
+                    layer.msg("手机号格式不正确",{icon:6,time:2000});
+                    return false;
+                }
+
+                var regexEmail = /^([0-9A-Za-z\-_\.]+)@([0-9a-z]+\.[a-z]{2,3}(\.[a-z]{2})?)$/g;
+                if (!regexEmail.test(email)){
+                    layer.msg("邮箱格式不正确",{icon:6,time:2000});
+                    return false;
+                }
+
+                var formData = new FormData();
+                formData.append("email",email);
+                formData.append("phone",phone);
+                formData.append("gender",gender);
+                formData.append("id",id);
+                $.ajax({
+                    url: "/user/updatePersonal",
+                    type: 'POST',
+                    data: formData,
+                    processData: false,
+                    contentType: false,
+                    success:function (data) {
+                        if (data.code == 200){
+                            layer.msg(data.message,{icon:6,time:2000},function () {
+                                location.reload();  //刷新
+                            });
+                        }else {
+                            layer.msg(data.message,{icon:5,time:2000});
+                        }
+                    }
+                });
+            }) ;
+        });
+    </script>
+</body>
+</html>

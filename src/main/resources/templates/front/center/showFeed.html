@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <base href="/">
+    <title>反馈信息展示</title>
+    <link rel="stylesheet" type="text/css" media="all" href="css/css_whir.css"/>
+    <script type="text/javascript" src="Scripts/jquery.SuperSlide.2.1.1.js"></script>
+    <link rel="stylesheet" href="lib/layui/css/layui.css" media="all">
+    <link href="lib/Hui-iconfont/1.0.1/iconfont.css" rel="stylesheet" type="text/css" />
+</head>
+<body>
+<div class="bookBox Dt">
+    <!--右边内容-->
+    <div class="mainCont">
+
+        <div class="bookBox Dt">
+            <!--start-->
+            <div class="templet_jobs_005">
+                <div class="bookcontent">
+                    <!--全部-->
+                    <ul style="display: block;">
+                        <p class="status">
+                            <span class="s1">ID</span>
+                            <span class="s2">联系方式</span>
+                            <span class="s3">标题</span>
+                            <span class="s4">反馈内容</span>
+                            <span class="s5">状态</span>
+                            <span class="s6" style="width: 95px">时间</span>
+                            <span class="s7">回复内容</span>
+                        </p>
+                        <div class="clear"></div>
+                        <!--从这里循环-->
+                        <li>
+                            <div class="carbox" th:each="feed : ${feedBackList}">
+                                <div class="sp6"><span style="word-break: break-all;white-space: normal;" th:text="${feed.replyMark} == null ? '无': ${feed.replyMark}">无</span></div>
+                                <div class="sp5" style="width: 95px"><span style="word-break: break-all;white-space: normal;" th:text="${#dates.format(feed.createTime,'yyyy-MM-dd HH:mm:ss')}">时间</span></div>
+                                <div class="sp4">
+                                    <span th:text="${feed.flag} == true ? '未回复' : '已回复'">状态</span>
+                                </div>
+                                <div class="sp3">
+                                    <span style="word-break: break-all;white-space: normal;" th:text="${feed.content}">反馈内容</span>
+                                </div>
+                                <div class="sp2" style="word-break: break-all;white-space: normal;" th:text="${feed.titile}"><span>标题</span></div>
+                                <div class="sp1">
+                                    <h6 class="h6"><a th:text="${feed.phone}">联系方式</a></h6>
+                                </div>
+                                <div class="sp0" ><span style="width: 90%" th:text="${feed.id}">ID</span></div>
+                            </div>
+                        </li>
+                        <!--从这里循环end-->
+                    </ul>
+                </div>
+            </div>
+            <!--end-->
+            <div><span class="r">共有数据：<strong><span th:text="${feedBackList.size()}" style="font-size: 15px"></span></strong> 条</span></div>
+        </div>
+        <!--右边内容 end-->
+    </div>
+
+</div>
+<script type="text/javascript" src="lib/jquery/1.9.1/jquery.min.js"></script>
+<script type="text/javascript" src="lib/layer/1.9.3/layer.js"></script>
+</body>
+</html>
